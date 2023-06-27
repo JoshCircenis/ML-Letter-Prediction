@@ -58,10 +58,6 @@ grid.addEventListener("mousemove", (event) => {
 function logState(cell){
   const index = cells.indexOf(cell);
   inputLayer[index] = 1;
-  //const row = Math.floor(index / 60);
-  //const col = index % 60;
-
-  //inputLayer[row][col] = 1;
 }
 
 function getNeighboringCells(cell) {
