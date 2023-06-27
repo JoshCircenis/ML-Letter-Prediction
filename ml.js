@@ -7,7 +7,7 @@ guess.addEventListener('click', guessFUNC);
 
 
 //create model
-const model = tf.sequential();
+const model = tf.sequential(); 
 model.add(tf.layers.dense({ units: 3600, activation: 'relu', inputShape: [3600] }));
 model.add(tf.layers.dense({ units: 1367, activation: 'relu'}));
 model.add(tf.layers.dense({ units: 26, activation: 'softmax' }));

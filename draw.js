@@ -89,7 +89,7 @@ function getNeighboringCells(cell) {
   if((row < 59)&&(col < 59)){
     neighboringCells.push(cells[index - 59]); // Top right
     neighboringCells.push(cells[index + 61]); // Bottom Right
-  }
+  } 
 
   return neighboringCells;
 }
