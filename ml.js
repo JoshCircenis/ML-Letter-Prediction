@@ -8,12 +8,13 @@ guess.addEventListener('click', guessFUNC);
 
 //create model
 const model = tf.sequential();
-model.add(tf.layers.dense({ units: 128, activation: 'relu', inputShape: [3600] }));
+model.add(tf.layers.dense({ units: 3600, activation: 'relu', inputShape: [3600] }));
+model.add(tf.layers.dense({ units: 1367, activation: 'relu'}));
 model.add(tf.layers.dense({ units: 26, activation: 'softmax' }));
 
 //compile model
 model.compile({
-  optimizer: 'adam',
+  optimizer: tf.train.adam(lr=1e-6),
   loss: 'categoricalCrossentropy',
   metrics: ['accuracy'],
 });
@@ -27,6 +28,8 @@ function learnFUNC(){
   //output to user
   output.innerHTML = "Training...";
   
+  //using setTimeout so that the inner html will update on screen for the user
+  setTimeout(function(){
   //1x3600 array from grid containing 1 for a black square and 0 for white square
   trainingData.push(inputLayer);
   //value from dropdown for which character is being trained
@@ -40,20 +43,22 @@ function learnFUNC(){
 
   //train the model 
   model.fit(inputTensor, labelsTensor, {
-    batchSize: 32,
-    epochs: 10,
+    batchSize: 7,
+    epochs: 100,
     shuffle: true,
     callbacks: {
       onEpochEnd: (epoch, logs) => {
         console.log(`Epoch ${epoch + 1}: loss = ${logs.loss.toFixed(4)}, accuracy = ${logs.acc.toFixed(4)}`);
+        output.innerHTML = "Training...<br>" + `Epoch Accuracy = ${logs.acc.toFixed(4)*100}%`;
       }
     } 
   })
   .then((history) => {
     console.log(history);
+    //output to user
+    output.innerHTML = "Training complete!";
   });
-  //output to user
-  output.innerHTML = "Training complete!";
+  }, 0);
 }
 
 function guessFUNC(){
@@ -68,9 +73,9 @@ function guessFUNC(){
   //convert prediction for output to user (displays top three predictions and confidence)
   const results = prediction.dataSync();
   const alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-  
   const indecies = greatestConfidenceAnswers(results);
-  
+
+  //format output
   output.innerHTML = "<pre>" + alphabet[indecies[0]]+" = "+(results[indecies[0]]*100).toFixed(2)+"%\n"+alphabet[indecies[1]]+" = "+(results[indecies[1]]*100).toFixed(2)+"%\n"+alphabet[indecies[2]]+" = "+(results[indecies[2]]*100).toFixed(2)+"%</pre>";
 }
 
